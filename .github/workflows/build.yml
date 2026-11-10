@@ -20,5 +20,8 @@ jobs:
     - name: Install Dependencies
       run: npm install
 
-    - name: Build Info
-      run: echo "Patlu Boss base structure compiled successfully!"
+    - name: Build Web / App Bundle
+      run: npm run build --if-present
+
+    - name: Success Log
+      run: echo "Patlu Boss build structure compiled successfully!"
