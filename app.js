@@ -1,54 +1,78 @@
+// Patlu Boss Master App Controller & Voice Listener
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView } from 'react-native';
+import { processVoiceCommand } from './publisher.js';
 
 export default function PatluBossApp() {
-  const [status, setStatus] = useState('Patlu Boss is online and ready for your command, Islam Bhai!');
+  const [commandText, setCommandText] = useState('');
+  const [status, setStatus] = useState('System Ready for Action');
+  const [loading, setLoading] = useState(false);
 
-  const handleCommand = (actionType) => {
-    switch(actionType) {
-      case 'AI_VOICE':
-        setStatus('Patlu Boss listening... Generating SEO and captions via ChatGPT.');
-        break;
-      case 'SOCIAL':
-        setStatus('Patlu Boss executing Auto-Post to YouTube, Instagram, and Facebook...');
-        break;
-      case 'WEBSITE':
-        setStatus('Patlu Boss accessing Patlu Bag Factory Seller Hub to list new products...');
-        break;
-      default:
-        setStatus('Ready for action.');
+  const handleExecute = async () => {
+    if (!commandText.trim()) {
+      setStatus('Please enter or speak a command!');
+      return;
+    }
+
+    setLoading(true);
+    setStatus('Processing Master Command...');
+
+    try {
+      const result = await processVoiceCommand(commandText);
+      setStatus(result);
+    } catch (error) {
+      console.error(error);
+      setStatus('Error executing command!');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.header}>🧢 Patlu Boss</Text>
-      <Text style={styles.subHeader}>Islam Bhai's Autonomous AI Master Controller</Text>
+    <ScrollView contentContainerStyle={styles.container}>
+      <Text style={styles.headerTitle}>PATLU BOSS MASTER APP</Text>
+      <Text style={styles.subTitle}>Autonomous All-in-One AI Controller</Text>
 
-      <div style={{ padding: 15, background: '#1e1e1e', borderRadius: 10, margin: 10, color: '#fff', border: '1px solid #ff9900' }}>
-        <p style={{ color: '#00ffcc', fontWeight: 'bold' }}>Status Log:</p>
-        <p>{status}</p>
-      </div>
+      <View style={styles.card}>
+        <Text style={styles.label}>Voice / Text Command Input:</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="e.g. Upload new bag design & post everywhere"
+          placeholderTextColor="#888"
+          value={commandText}
+          onChangeText={setCommandText}
+          multiline
+        />
 
-      <TouchableOpacity style={styles.button} onPress={() => handleCommand('AI_VOICE')}>
-        <Text style={styles.buttonText}>🎙️ Hello Patlu Boss (Voice / AI Prompt)</Text>
-      </TouchableOpacity>
+        <TouchableOpacity 
+          style={[styles.button, loading && styles.disabledButton]} 
+          onPress={handleExecute}
+          disabled={loading}
+        >
+          <Text style={styles.buttonText}>{loading ? 'Executing...' : 'Execute Master Command'}</Text>
+        </TouchableOpacity>
+      </View>
 
-      <TouchableOpacity style={styles.button} onPress={() => handleCommand('SOCIAL')}>
-        <Text style={styles.buttonText}>🚀 Auto-Post to Social Media</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.button} onPress={() => handleCommand('WEBSITE')}>
-        <Text style={styles.buttonText}>🛒 Auto-List Product on Website</Text>
-      </TouchableOpacity>
+      <View style={styles.statusCard}>
+        <Text style={styles.statusLabel}>System Status:</Text>
+        <Text style={styles.statusText}>{status}</Text>
+      </View>
     </ScrollView>
   );
 }
 
-const styles = {
-  container: { flex: 1, backgroundColor: '#121212', padding: 20 },
-  header: { fontSize: 28, fontWeight: 'bold', color: '#ff9900', textAlign: 'center', marginTop: 20 },
-  subHeader: { fontSize: 13, color: '#aaaaaa', textAlign: 'center', marginBottom: 20 },
-  button: { backgroundColor: '#ff9900', padding: 16, borderRadius: 8, marginVertical: 10, alignItems: 'center' },
-  buttonText: { color: '#000000', fontSize: 16, fontWeight: 'bold' }
-};
+const styles = StyleSheet.create({
+  container: {
+    flexGrow: 1,
+    backgroundColor: '#0f172a',
+    padding: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  headerTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#38bdf8',
+    marginBottom: 5,
+    textAlign: 'center',
+  },
