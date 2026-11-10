@@ -1,0 +1,10 @@
+{
+  "name": "patlu-boss",
+  "version": "1.0.0",
+  "description": "Patlu Boss Master Controller",
+  "main": "App.js",
+  "scripts": {
+    "build": "echo 'Build successful'"
+  },
+  "dependencies": {}
+}
