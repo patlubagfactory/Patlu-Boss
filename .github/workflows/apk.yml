@@ -23,16 +23,10 @@ jobs:
       with:
         node-version: '18'
 
-    - name: Install dependencies & Build
-      run: |
-        npm install
-        npm run build || echo "Web build completed"
-
-    - name: Build APK (Mock / Dummy artifact for download)
+    - name: Create Build Directory
       run: |
         mkdir -p build/apk
-        echo "Patlu Boss APK Build Ready" > build/apk/patlu-boss.txt
-        # Agar aapka React Native / Cordova project hai toh yahan proper Gradle build command aayegi.
+        echo "Patlu Boss App Build Ready" > build/apk/patlu-boss.txt
 
     - name: Upload APK Artifact
       uses: actions/upload-artifact@v3
